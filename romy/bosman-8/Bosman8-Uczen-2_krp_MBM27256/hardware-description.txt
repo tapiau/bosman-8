@@ -1,0 +1,97 @@
+Patrząc „po flakach” tej płytki, najwięcej mówią konkretne układy scalone i to, że po prawej masz trzy identyczne tory analogowo-tranzystorowe z trymerami.
+
+Co widać na PCB (najważniejsze tropy)
+1) Dwa układy DS75176AN (8-pin)
+
+Na zdjęciu da się odczytać „… 75176AN” na dwóch kościach w części środkowo-lewej.
+
+DS75176 to klasyczny transceiver RS-485 / RS-422 (różnicowy nadajnik/odbiornik na skrętce, przemysł, sieci wielopunktowe, długie kable, odporność na syf).
+To jest bardzo mocny sygnał: ta płytka prawie na pewno służyła do komunikacji po linii różnicowej, nie do „lokalnej logiki” komputera.
+
+2) MCY7406 (co najmniej 2 sztuki) + MCY74069
+
+„7406” to 6 inwerterów z otwartym kolektorem – czyli typowy „młotek” do:
+
+sterowania liniami na zewnątrz (podciągnięcia rezystorami, większe prądy),
+
+robienia prostych driverów,
+
+mieszania kilku źródeł na jednej linii (wired-OR),
+
+dopasowania poziomów/obciążeń.
+
+To z kolei pasuje do: sterowania liniami sterującymi transceiverów RS-485 (DE/RE), sygnałów kierunku, enable, ewentualnie diod/wyjść.
+
+3) K555… (radziecka TTL/LS) – wygląda jak K555ТМ2
+
+Seria K555 to odpowiednik 74LS. „TM2” bywa spotykane jako przeróżna logika (często przerzutniki). To sugeruje prostą „klejoną” logikę protokołu: kierunek, strob, synchronizacja, itp.
+
+4) Trzy identyczne „sekcje” po prawej z trymerami
+
+Każda ma:
+
+trymer na górze,
+
+po kilka tranzystorów,
+
+RC,
+
+elektrolit.
+
+To wygląda jak regulowane progi / kształtowanie sygnału / filtracja dla sygnałów idących na zewnątrz albo przychodzących z zewnątrz. Czyli coś typu:
+
+regulacja czułości,
+
+dopasowanie do konkretnego kabla/obciążenia,
+
+ustawienie biasu/terminacji/offsetu dla linii.
+
+I to idealnie pasuje do „niestandardowego” modułu, który musiał działać z różnymi instalacjami/kablami.
+
+Najbardziej prawdopodobna funkcja (moja top-1)
+Karta / moduł komunikacyjny „sieciowy” do 8-bitowca – RS-485/RS-422
+
+Czyli coś w rodzaju:
+
+interfejsu sieci lokalnej (kilka komputerów/terminali po jednej magistrali),
+
+interfejsu do urządzeń peryferyjnych/sterowników na długim kablu (przemysł, pomiary),
+
+ewentualnie „sieć” w stylu: jeden komputer + kilka węzłów.
+
+Napis na laminacie „NET-…?” (wygląda jak NET-COP?) też pachnie „network / coprocessor” bardziej niż „audio enhancer 3000”.
+
+Dlaczego nie coś innego?
+Bo DS75176AN to nie jest układ, który ktoś wkłada przypadkiem do komputera domowego „żeby ładniej pikało”. To jest robota od różnicowej transmisji po kablu.
+
+Dwie alternatywy (mniej pewne, ale możliwe)
+
+Interfejs przemysłowy / telemetryczny
+Komputer 8-bit jako sterownik/terminal, a ta płytka robiła fizyczną warstwę łącza + 3 tory kondycjonowania (np. trzy wejścia/linie sterujące/kanaliki).
+
+Jakiś „specjalny” modem/łącze kablowe
+Te trzy trymerowe sekcje mogłyby robić dopasowanie torów (amplituda/progi) dla nietypowego medium. Ale nadal: sercem i tak byłoby RS-485/RS-422.
+
+Co możesz sprawdzić, żeby to potwierdzić w 5 minut (bez archeologii)
+
+Ile przewodów wychodzi z modułu do świata?
+RS-485 zwykle: 2 żyły (A/B) + masa (czasem ekran) + zasilanie. RS-422 full duplex: 4 żyły (2 pary) + masa.
+
+Czy gdzieś jest złącze na zewnątrz obudowy (DIN, DB-9/DB-25, śrubowe, RJ-coś)?
+Jeśli jest DB-9/śrubowe – bingo.
+
+Czy na kablach idących do tych trzech „sekcji” po prawej” są pary/sploty?
+Jeśli do każdej sekcji idą 2 żyły jako para, to mogły być trzy linie/kanaliki.
+
+Czy przy wyjściu na kabel są rezystory ~120 Ω (terminacja RS-485)?
+Na zdjęciu nie widać ich „wprost”, ale mogły być realizowane inaczej (albo terminacja była gdzie indziej).
+
+Jeśli wrzucisz jeszcze:
+
+zdjęcie drugiej strony PCB,
+
+zdjęcie złącza/wiązki (dokąd idą przewody, jakie kolory, ile pinów),
+
+jakikolwiek napis z obudowy / komputera (model),
+
+to zawężę to do „to jest RS-485 do sieci X” vs „to jest RS-422 do urządzenia Y” i spróbuję nawet odgadnąć topologię (half-duplex/full-duplex) po samym okablowaniu.
